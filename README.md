@@ -4,7 +4,7 @@ Remote assembly for FPC 3.2.0
 This release of Code comes with a Windows-Console Application that<br>
 have support for mouse pointer interaction with the user.
 
-Windows Console Application's have to "uncheck" the "Quick-Mode" in<br>
+Windows Console Application's have to "uncheck" the "QuickEdit-Mode" in<br>
 the File-Link Settings to take effect.
 
 To do so, please right click with the mouse button on a free area on<br>
