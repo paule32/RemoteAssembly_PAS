@@ -6,12 +6,11 @@
 //
 // only for non-profit, and/or education usage !!!
 // ----------------------------------------------------------------
-{$mode delphi}
-{$H+}  // AnsiString instead String
-
 unit DosUtils;
 
 interface
+uses Windows;
+
 procedure ShowMessage(AString: String);
 
 implementation
@@ -21,7 +20,7 @@ implementation
 // ----------------------------------------------------------------
 procedure ShowMessage(AString: String);
 begin
-  Write(AString);
+  Windows.MessageBox(0,PChar(AString),PChar('Info'),0);
 end;
 {$ENDIF}
 

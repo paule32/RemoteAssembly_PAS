@@ -17,6 +17,11 @@ uses
   Menus,    // Statusbar
   MsgBox,   // MessageBox
   
+  Classes,
+  SysUtils,
+  Dialogs,
+  DosUtils,
+  
   remoteAssembly;
 
 type
@@ -32,7 +37,7 @@ type
 // ----------------------------------------------------------------
 procedure TAsmJIT_Desktop.InitStatusLine;
 var
-  R: TRect;
+  R: Objects.TRect;
   P0        : PStatusDef;   // pointer to full item
   P1, P2, P3: PStatusItem;  // pointer to hotkey's
 begin
@@ -54,7 +59,7 @@ end;
 // ----------------------------------------------------------------
 procedure TAsmJIT_Desktop.InitMenuBar;
 var
-  R: TRect;
+  R: Objects.TRect;
 begin
   GetExtent(R);
   R.B.Y := R.A.Y + 1;   // menu position
@@ -75,12 +80,28 @@ var
 // Entry point for the application
 // ----------------------------------------------------------------
 begin
-
-  debugApp.Init;  // init
-  
-  MessageBox('Hallo', nil, mfOkButton);
-  
-  debugApp.Run ;  // processed
-  debugApp.Done;  // release
-
+  try
+    try
+      // remote assembly stuff
+      JitRunTime   := TASMJIT_RunTime  .Create;
+      JitAssembler := TASMJIT_Assembler.Create(JitRunTime);
+      
+      // TUI init stuff
+      debugApp.Init;  // init
+      
+      MessageBox('Hallo', nil, mfOkButton);
+ 
+      debugApp.Run ;  // processed
+      debugApp.Done;  // release
+    except
+      on E: Exception do
+      begin
+        ShowMessage('Exception:' + #13#10 +
+        E.Message);
+      end;
+    end;
+  finally
+    JitAssembler.Free;
+    JitRuntime  .Free;
+  end;
 end.

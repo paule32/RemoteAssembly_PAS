@@ -10,7 +10,7 @@ unit remoteAssembly;
 
 interface
 uses
-  Classes, SysUtils, DosUtils;
+  Classes, SysUtils, DosUtils, VersionHelpers;
 
 type
   // listing specified stuff
@@ -25,10 +25,17 @@ type
   // x86 16/32-bit remote assembler runtime
   // ----------------------------------------------------------------
   TAsmJIT_RunTime = class
+  private
+    FWindowsSignature: String;
+    function GetWinVersion: String;
   public
     constructor Create;
     destructor Destroy; override;
+  published
+    property WinVersion: String read GetWinVersion;
   end;
+var
+  JitRuntime: TAsmJIT_RunTime;
 
 type
   // ----------------------------------------------------------------
@@ -84,6 +91,8 @@ type
     constructor Create; overload;
     destructor Destroy; override;
   end;
+var
+  JitAssembler: TAsmJIT_Assembler;
 
 implementation
 
@@ -774,7 +783,7 @@ end;
 // ----------------------------------------------------------------
 constructor TAsmJIT_RunTime.Create;
 begin
-
+  FWindowsSignature := GetWinVersion;
 end;
 
 // ----------------------------------------------------------------
@@ -783,6 +792,24 @@ end;
 destructor TAsmJIT_RunTime.Destroy;
 begin
   inherited Destroy;
+end;
+
+function TAsmJIT_RunTime.GetWinVersion: String;
+begin
+  result := 'Unknown';
+  if isWindowsXPorGreater       then result := 'Windows XP'          else
+  if isWindowsXPSP1OrGreater    then result := 'Windows XP SP 1'     else
+  if isWindowsXPSP2OrGreater    then result := 'Windows XP SP 2'     else
+  if isWindowsXPSP3OrGreater    then result := 'Windows XP SP 3'     else
+  if isWindowsVistaOrGreater    then result := 'Windows 7 Vista'     else
+  if IsWindowsVistaSP1OrGreater then result := 'Windows 7 Vista SP1' else
+  if IsWindowsVistaSP2OrGreater then result := 'Windows 7 Vista SP2' else
+  if IsWindows7OrGreater        then result := 'Windows 7'           else
+  if IsWindows7SP1OrGreater     then result := 'Windows 7 SP1'       else
+  if IsWindows8OrGreater        then result := 'Windows 8'           else
+  if IsWindows8Point1OrGreater  then result := 'Windows 8.1'         else
+  if IsWindows10OrGreater       then result := 'Windows 10'
+  ;
 end;
 
 // ----------------------------------------------------------------
@@ -799,6 +826,7 @@ end;
 constructor TAsmJIT_Assembler.Create;
 begin
   FRunTime := TAsmJIT_RunTime.Create;
+  ShowMessage(FRunTime.WinVersion);
 end;
 
 // ----------------------------------------------------------------
